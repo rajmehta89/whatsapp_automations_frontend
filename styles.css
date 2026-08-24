@@ -110,8 +110,7 @@ body {
     box-shadow: var(--shadow-soft);
 }
 
-.highlight-card strong,
-.workspace-brand strong {
+.highlight-card strong {
     display: block;
     font-family: "Sora", sans-serif;
     letter-spacing: -0.03em;
@@ -261,27 +260,52 @@ iframe {
     background: #fff;
 }
 
-.floating-logout {
+.workspace-rail {
     position: fixed;
-    top: 18px;
-    right: 18px;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 88px;
     z-index: 20;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 18px 14px;
+    pointer-events: none;
+}
+
+.workspace-rail::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 88px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.88));
+    border-right: 1px solid rgba(16, 32, 51, 0.08);
+    backdrop-filter: blur(14px);
+}
+
+.rail-logout {
+    position: relative;
+    z-index: 1;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 44px;
-    padding: 12px 16px;
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 10px;
     border: 1px solid rgba(16, 32, 51, 0.08);
-    border-radius: 16px;
+    border-radius: 18px;
     background: rgba(255, 255, 255, 0.92);
     color: var(--text);
     box-shadow: var(--shadow-soft);
-    backdrop-filter: blur(14px);
+    backdrop-filter: blur(12px);
     cursor: pointer;
+    pointer-events: auto;
+    font-weight: 800;
     transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
 
-.floating-logout:hover {
+.rail-logout:hover {
     transform: translateY(-1px);
     box-shadow: 0 18px 32px rgba(16, 32, 51, 0.12);
 }
@@ -317,11 +341,19 @@ iframe {
         padding: 22px;
     }
 
-    .floating-logout {
-        top: 12px;
-        right: 12px;
-        min-height: 40px;
-        padding: 10px 14px;
+    .workspace-rail {
+        width: 74px;
+        padding: 12px 10px;
+    }
+
+    .workspace-rail::before {
+        width: 74px;
+    }
+
+    .rail-logout {
+        min-height: 44px;
+        padding: 10px 8px;
         border-radius: 14px;
+        font-size: 12px;
     }
 }
