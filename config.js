@@ -1,3 +1,3 @@
 window.APP_CONFIG = {
-    backendUrl: "https://your-render-backend-url.onrender.com"
+    backendUrl: "https://whatsapp-automations-backend.onrender.com"
 };
