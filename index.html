@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Operations Workspace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="shell">
+        <header class="hero">
+            <div class="hero-copy">
+                <span class="eyebrow">Live Frontend</span>
+                <h1>Service Operations Workspace</h1>
+                <p>
+                    This frontend is deployed separately from the WhatsApp backend.
+                    Set the backend URL in <code>config.js</code> and the workspace will load here.
+                </p>
+                <div class="actions">
+                    <a class="primary-button" id="open-workspace" href="#" target="_blank" rel="noreferrer">Open Backend Workspace</a>
+                    <button class="soft-button" id="reload-frame" type="button">Reload Preview</button>
+                </div>
+                <div class="meta-card">
+                    <span class="meta-label">Backend URL</span>
+                    <strong id="backend-url-label">Not configured</strong>
+                </div>
+            </div>
+        </header>
+
+        <main class="frame-panel">
+            <div class="frame-header">
+                <div>
+                    <span class="eyebrow">Embedded Preview</span>
+                    <h2>Live Workspace</h2>
+                </div>
+                <span class="status-pill" id="frame-status">Waiting for backend</span>
+            </div>
+            <div class="frame-wrap" id="frame-wrap">
+                <div class="empty-state" id="empty-state">
+                    Configure <code>frontend/config.js</code> with your Render backend URL to preview the live workspace here.
+                </div>
+                <iframe id="workspace-frame" title="Service Operations Workspace"></iframe>
+            </div>
+        </main>
+    </div>
+
+    <script src="./config.js"></script>
+    <script>
+        const backendUrl = window.APP_CONFIG?.backendUrl?.trim() || "";
+        const frame = document.getElementById("workspace-frame");
+        const emptyState = document.getElementById("empty-state");
+        const status = document.getElementById("frame-status");
+        const openWorkspace = document.getElementById("open-workspace");
+        const backendLabel = document.getElementById("backend-url-label");
+
+        function normalizeUrl(url) {
+            return url.replace(/\/+$/, "");
+        }
+
+        function loadBackend() {
+            if (!backendUrl) {
+                status.textContent = "Backend not configured";
+                openWorkspace.removeAttribute("href");
+                return;
+            }
+
+            const normalized = normalizeUrl(backendUrl);
+            backendLabel.textContent = normalized;
+            openWorkspace.href = normalized;
+            frame.src = normalized;
+            frame.style.display = "block";
+            emptyState.style.display = "none";
+            status.textContent = "Loading backend";
+        }
+
+        document.getElementById("reload-frame").addEventListener("click", () => {
+            if (frame.src) {
+                frame.contentWindow?.location.reload();
+            } else {
+                loadBackend();
+            }
+        });
+
+        frame.addEventListener("load", () => {
+            status.textContent = "Backend loaded";
+        });
+
+        loadBackend();
+    </script>
+</body>
+</html>
