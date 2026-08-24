@@ -262,37 +262,19 @@ iframe {
 
 .workspace-rail {
     position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 88px;
+    left: 16px;
+    bottom: 16px;
     z-index: 20;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding: 18px 14px;
     pointer-events: none;
 }
 
-.workspace-rail::before {
-    content: "";
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: 88px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.88));
-    border-right: 1px solid rgba(16, 32, 51, 0.08);
-    backdrop-filter: blur(14px);
-}
-
 .rail-logout {
-    position: relative;
-    z-index: 1;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    min-width: 120px;
     min-height: 48px;
-    padding: 12px 10px;
+    padding: 12px 16px;
     border: 1px solid rgba(16, 32, 51, 0.08);
     border-radius: 18px;
     background: rgba(255, 255, 255, 0.92);
@@ -342,17 +324,14 @@ iframe {
     }
 
     .workspace-rail {
-        width: 74px;
-        padding: 12px 10px;
-    }
-
-    .workspace-rail::before {
-        width: 74px;
+        left: 12px;
+        bottom: 12px;
     }
 
     .rail-logout {
         min-height: 44px;
-        padding: 10px 8px;
+        min-width: 108px;
+        padding: 10px 14px;
         border-radius: 14px;
         font-size: 12px;
     }
