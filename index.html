@@ -84,14 +84,14 @@
         const frame = document.getElementById("workspace-frame");
         const emptyState = document.getElementById("empty-state");
         const logoutButton = document.getElementById("logout-button");
-        const workspacePath = "/workspace";
+        const workspaceHash = "#/workspace";
 
         function normalizeUrl(url) {
             return url.replace(/\/+$/, "");
         }
 
         function isWorkspaceRoute() {
-            return window.location.pathname.replace(/\/+$/, "") === workspacePath;
+            return window.location.hash === workspaceHash;
         }
 
         function isAuthenticated() {
@@ -100,7 +100,7 @@
 
         function goToWorkspace() {
             if (!isWorkspaceRoute()) {
-                window.location.replace(workspacePath);
+                window.location.hash = workspaceHash;
                 return;
             }
             showWorkspace();
@@ -108,7 +108,8 @@
 
         function goToLogin() {
             if (isWorkspaceRoute()) {
-                window.location.replace("/");
+                const cleanUrl = `${window.location.pathname}${window.location.search}`;
+                window.location.replace(cleanUrl);
                 return;
             }
             showLogin();
@@ -170,6 +171,14 @@
         if (rememberedEmail) {
             emailInput.value = rememberedEmail;
         }
+
+        window.addEventListener("hashchange", () => {
+            if (isAuthenticated() && isWorkspaceRoute()) {
+                showWorkspace();
+            } else if (!isWorkspaceRoute()) {
+                showLogin();
+            }
+        });
 
         if (isAuthenticated() && isWorkspaceRoute()) {
             showWorkspace();
