@@ -57,25 +57,11 @@
     </div>
 
     <div class="workspace-screen" id="workspace-screen" hidden>
-        <header class="workspace-topbar">
-            <div class="workspace-brand">
-                <span class="eyebrow">Live Workspace</span>
-                <strong>WhatsApp Operations Dashboard</strong>
-            </div>
-            <div class="workspace-actions">
-                <span class="status-pill" id="frame-status">Loading backend</span>
-                <a class="soft-button" id="open-workspace" href="#" target="_blank" rel="noreferrer">Open In New Tab</a>
-                <button class="soft-button" id="reload-frame" type="button">Reload</button>
-                <button class="primary-button" id="logout-button" type="button">Logout</button>
-            </div>
-        </header>
-
-        <main class="workspace-frame-shell">
-            <div class="empty-state" id="empty-state">
-                Backend URL is not configured.
-            </div>
-            <iframe id="workspace-frame" title="WhatsApp Operations Workspace"></iframe>
-        </main>
+        <button class="floating-logout" id="logout-button" type="button">Logout</button>
+        <div class="empty-state" id="empty-state">
+            Backend URL is not configured.
+        </div>
+        <iframe id="workspace-frame" title="WhatsApp Operations Workspace"></iframe>
     </div>
 
     <script src="./config.js"></script>
@@ -95,17 +81,35 @@
         const loginError = document.getElementById("login-error");
         const frame = document.getElementById("workspace-frame");
         const emptyState = document.getElementById("empty-state");
-        const status = document.getElementById("frame-status");
-        const openWorkspace = document.getElementById("open-workspace");
-        const reloadFrame = document.getElementById("reload-frame");
         const logoutButton = document.getElementById("logout-button");
+        const workspacePath = "/workspace";
 
         function normalizeUrl(url) {
             return url.replace(/\/+$/, "");
         }
 
+        function isWorkspaceRoute() {
+            return window.location.pathname.replace(/\/+$/, "") === workspacePath;
+        }
+
         function isAuthenticated() {
             return localStorage.getItem(sessionKey) === "true";
+        }
+
+        function goToWorkspace() {
+            if (!isWorkspaceRoute()) {
+                window.location.replace(workspacePath);
+                return;
+            }
+            showWorkspace();
+        }
+
+        function goToLogin() {
+            if (isWorkspaceRoute()) {
+                window.location.replace("/");
+                return;
+            }
+            showLogin();
         }
 
         function showWorkspace() {
@@ -121,19 +125,15 @@
 
         function loadBackend() {
             if (!backendUrl) {
-                status.textContent = "Backend not configured";
                 emptyState.hidden = false;
                 frame.style.display = "none";
-                openWorkspace.removeAttribute("href");
                 return;
             }
 
             const normalized = normalizeUrl(backendUrl);
-            openWorkspace.href = normalized;
             frame.src = normalized;
             frame.style.display = "block";
             emptyState.hidden = true;
-            status.textContent = "Loading backend";
         }
 
         loginForm.addEventListener("submit", (event) => {
@@ -155,25 +155,13 @@
             } else {
                 localStorage.removeItem(rememberedEmailKey);
             }
-            showWorkspace();
-        });
-
-        reloadFrame.addEventListener("click", () => {
-            if (frame.src) {
-                frame.contentWindow?.location.reload();
-            } else {
-                loadBackend();
-            }
+            goToWorkspace();
         });
 
         logoutButton.addEventListener("click", () => {
             localStorage.removeItem(sessionKey);
             passwordInput.value = "";
-            showLogin();
-        });
-
-        frame.addEventListener("load", () => {
-            status.textContent = "Backend loaded";
+            goToLogin();
         });
 
         const rememberedEmail = localStorage.getItem(rememberedEmailKey);
@@ -181,8 +169,12 @@
             emailInput.value = rememberedEmail;
         }
 
-        if (isAuthenticated()) {
+        if (isAuthenticated() && isWorkspaceRoute()) {
             showWorkspace();
+        } else if (isAuthenticated()) {
+            goToWorkspace();
+        } else if (isWorkspaceRoute()) {
+            goToLogin();
         } else {
             showLogin();
         }
